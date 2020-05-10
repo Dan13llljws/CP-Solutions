@@ -9,7 +9,7 @@ ll fun(int l, int r){
 	return a[l] + a[r] == 0 || a[l] * a[r] == 0;
 }
 int main(){
-	scanf("%d", &n);
+	scanf("%d", &n); getchar();
 	for (int i = 1; i <= n; i++){
 		char c = getchar();
 		if (c == '(') a[i] = 1;
