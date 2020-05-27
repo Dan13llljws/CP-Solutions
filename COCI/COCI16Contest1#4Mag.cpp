@@ -33,7 +33,7 @@ int main(){
 		adj[a].pb(b), adj[b].pb(a);
 	}
 	for (int i = 1; i <= n; i++) ans = min(ans, c[i] = re);
-	if (ans > 2) return 0 * printf("%d/1\n", ans);
+	if (ans > 1) return 0 * printf("%d/1\n", ans);
 	dfs(1, 0);
 	if (best > sec) printf("1/%d\n", best);
 	else printf("2/%d\n", 2 * sec + 1);
