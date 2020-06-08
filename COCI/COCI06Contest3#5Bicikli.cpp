@@ -9,8 +9,7 @@ int n, m, dp[MM]; bool vis[MM], over;
 vector<int> adj[MM];
 int dfs(int src){
 	if (dp[src] != -1) return dp[src];
-	dp[src] = 0;
-	vis[src] = 1;
+	dp[src] = 0, vis[src] = 1;
 	bool cycle = 0;
 	for (int v : adj[src]){
 		if (vis[v]){cycle = 1; continue;}
@@ -24,10 +23,7 @@ int dfs(int src){
 }
 int main(){
 	n = re, m = re; ms(dp, -1); dp[2] = 1;
-	for (int i = 0; i < m; i++){
-		int a = re, b = re;
-		adj[a].pb(b);
-	}
+	for (int i = 0; i < m; i++) adj[re].pb(re);
 	dfs(1);
 	if (over) printf("%09d", dp[1]);
 	else printf("%d", dp[1]);
