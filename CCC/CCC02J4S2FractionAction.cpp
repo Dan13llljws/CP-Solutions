@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 int a, b;
 int main(){
-	scanf("%d%d", &a, &b);
+    scanf("%d%d", &a, &b);
     if (a == 0) puts("0");
     else if (a % b == 0) printf("%d", a / b);
     else {
