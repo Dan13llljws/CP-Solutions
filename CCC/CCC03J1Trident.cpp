@@ -1,30 +1,18 @@
 #include <iostream>
-using namespace std;
-int main()
-{
-    int t, s ,h;
-    cin >>t >>s >>h;
+int t, s, h;
+int main(){
+    scanf("%d%d%d", &t, &s, &h);
     for (int i = 0; i < t; i++){
-        cout << "*";
-        for (int j = 0; j < s; j++){
-            cout << " ";
-        }
-        cout << "*";
-        for (int j = 0; j < s; j++){
-            cout << " ";
-        }
-        cout << "*";
-        cout <<endl;
+        putchar('*');
+        for (int j = 0; j < s; j++) putchar(' ');
+        putchar('*');
+        for (int j = 0; j < s; j++) putchar(' ');
+        puts("*");
     }
-    for (int i = 0; i < 3 + 2 * s; i++){
-        cout << "*";
-    }
-    cout <<endl;
+    for (int i = 0; i < 3 + 2 * s; i++) putchar('*');
+    puts("");
     for (int i = 0; i < h; i++){
-        for (int j = 0; j < 1 + s; j++){
-            cout << " ";
-        }
-        cout << "*" <<endl;
+        for (int j = 0; j < 1 + s; j++) putchar(' ');
+        puts("*");
     }
-    return 0;
 }
