@@ -20,7 +20,7 @@ int main(){
 		if (!s.empty()){
 			if (s.top().f == a){
 				ans += s.top().s;
-				if (sz(s) > 1) ans++;
+				if (s.size() > 1) ans++;
 			}
 			else ans++;
 		}
