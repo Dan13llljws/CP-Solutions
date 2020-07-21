@@ -3,7 +3,7 @@ using namespace std;
 int read(){int s=0,f=1;char ch=getchar();while(ch<'0'||ch>'9'){if(ch=='-')f=-1;ch=getchar();}while(ch>='0'&&ch<='9'){s=(s<<3)+(s<<1)+ch-'0',ch=getchar();}return s*f;}
 #define re read()
 const int mod = 1e9 + 7, MM = 1e3 + 5;
-int r, c, maxa, t, st[MM], g[MM][MM], h[MM], l[MM]; bool ok[MM][MM];
+int r, c, maxa, t, st[MM], g[MM][MM], h[MM]; bool ok[MM][MM];
 int main(){
 	r = re, c = re;
 	for (int i = 0; i < r; i++)
@@ -18,8 +18,8 @@ int main(){
 			else h[j] = 0;
 		t = 0;
 		for (int j = 1; j <= c; j++){
-			while(t && h[st[t]] > h[j]) maxa = max(maxa, (h[st[t]] + 1) * (j - l[st[t--]]));
-			l[j] = st[t], st[++t] = j;
+			while(t && h[st[t]] > h[j]) maxa = max(maxa, (h[st[t]] + 1) * (j - st[--t]));
+			st[++t] = j;
 		}
 	}
 	printf("%d", maxa);
