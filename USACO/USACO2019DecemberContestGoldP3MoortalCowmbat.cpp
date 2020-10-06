@@ -7,13 +7,13 @@ int read(){int s=0,f=1;char ch=getchar();while(ch<'0'||ch>'9'){if(ch=='-')f=-1;c
 #define re read()
 #define ms(x, y) memset(x, y, sizeof(x))
 const int mod = 1e9 + 7, MM = 1e5 + 5;
-int n, m, k, ans = INF, a[26][26], dist[26][26], psa[26][MM], dp[MM][26]; char s[MM];
+int n, m, k, ans = INF, dist[26][26], psa[26][MM], dp[MM][26]; char s[MM];
 int main(){
 	n = re, m = re, k = re;
 	scanf("%s", s + 1); ms(dp, inf); ms(dist, inf);
 	for (int i = 0; i < m; i++)
 		for (int j = 0; j < m; j++) 
-			dist[i][j] = a[i][j] = re;
+			dist[i][j] = re;
 	for (int i = 0; i < m; i++)
 		for (int x = 0; x < m; x++)
 			for (int y = 0; y < m; y++)
