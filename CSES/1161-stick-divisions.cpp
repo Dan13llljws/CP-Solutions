@@ -1,16 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 int main(){
-    int n, k;
-    cin >> n >> k;
-    vector<int> p(k);
-    for (int &x : p) cin >> x;
-    vector<int> dp(n + 1);
-    for (int i = 1; i <= n; i++){
-        for (int x : p)
-            if (x <= i) dp[i] |= !dp[i - x];
-        cout << (dp[i] ? 'W' : 'L');
+    int x, n;
+    cin >> x >> n;
+    priority_queue<int> q;
+    long long ans = 0;
+    while(n--){
+        int y;
+        cin >> y;
+        q.push(-y);
     }
-    cout << '\n';
+    while(q.size() > 1){
+        int a = -q.top(); q.pop();
+        int b = -q.top(); q.pop();
+        ans += a + b;
+        q.push(-a - b);
+    }
+    cout << ans << '\n';
 }
-
