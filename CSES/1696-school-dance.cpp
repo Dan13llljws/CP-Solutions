@@ -1,15 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-class Dinic {
-  class Edge {
-    friend Dinic;
+struct Dinic {
+  struct Edge {
     int to, rev;
 		ll c, oc;
     Edge(int to, int rev, ll c, ll oc): to(to), rev(rev), c(c), oc(oc) {}
 		ll flow() { return max(oc - c, 0LL); } // if you need flows
   };
-public:
   vector<vector<Edge>> adj;
   vector<int> lvl, ptr, q;
   ll dfs(int v, int t, ll f) {
@@ -24,7 +22,7 @@ public:
 		}
 		return 0;
 	}
-  Dinic(int n): q(n), adj(n), lvl(n), ptr(n) {}
+  Dinic(int n): adj(n), lvl(n), ptr(n), q(n) {}
   void addEdge(int a, int b, ll c, ll rcap = 0){
     adj[a].push_back({b, (int)adj[b].size(), c, c});
 		adj[b].push_back({a, (int)adj[a].size() - 1, rcap, rcap});
@@ -48,19 +46,19 @@ public:
 };
 int main(){
   cin.sync_with_stdio(0); cin.tie(0);
-  int n, m;
-  cin >> n >> m;
-  Dinic g(n + 1);
-  vector<pair<int,int>> e;
-  for (int i = 0; i < m; i++){
+  int n, m, k;
+  cin >> n >> m >> k;
+  Dinic g(n + m + 2);
+  for (int i = 1; i <= n; i++) g.addEdge(0, i, 1);
+  for (int i = 1; i <= m; i++) g.addEdge(n + i, n + m + 1, 1);
+  for (int i = 0; i < k; i++){
     int a, b;
     cin >> a >> b;
-    g.addEdge(a, b, 1);
-    g.addEdge(b, a, 1);
-    e.push_back({a, b});
+    g.addEdge(a, b + n, 1);
   }
-  cout << g.calc(1, n) << '\n';
-  for (auto [a, b] : e)
-    if (g.leftOfMinCut(a) ^ g.leftOfMinCut(b))
-      cout << a << ' ' << b << '\n';
+  cout << g.calc(0, n + m + 1) << '\n';
+  for (int i = 1; i <= n; i++)
+    for (Dinic::Edge e : g.adj[i])
+      if (e.flow() && e.to > n)
+        cout << i << ' ' << e.to - n << '\n';
 }
