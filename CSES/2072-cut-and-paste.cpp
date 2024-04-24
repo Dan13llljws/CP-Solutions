@@ -7,14 +7,23 @@ public:
 	struct Node {
 		T key;
 		int priority, size;
+		bool rev;
 		Node *l, *r;
-		Node(T _key): key(_key), priority(rand()), size(1), l(NULL), r(NULL) {}
+		Node(T _key): key(_key), priority(rand()), size(1), rev(0), l(NULL), r(NULL) {}
 	};
 	Node *root;
 	int get_size(Node *t) { return t ? t->size : 0; }
 	void push_up(Node *t) { t->size = get_size(t->l) + get_size(t->r) + 1; }
+	void push_down(Node *t) {
+		if (t && t->rev) {
+			t->rev = 0, swap(t->l, t->r);
+			if (t->l) t->l->rev ^= 1;
+			if (t->r) t->r->rev ^= 1;
+		}
+	}
 	pair<Node*, Node*> split_by_key(Node *t, T key) { // split (-infty, key), [key, infty)
 		if (!t) return {};
+		push_down(t);
 		if (t->key < key) {
 			auto p = split_by_key(t->r, key);
 			t->r = p.first;
@@ -29,6 +38,7 @@ public:
 	}
 	pair<Node*, Node*> split_by_size(Node *t, int k) { // split [0...k), [k ... n)
 		if (!t) return {};
+		push_down(t);
 		if (get_size(t->l) < k) {
 			auto p = split_by_size(t->r, k - 1 - get_size(t->l));
 			t->r = p.first;
@@ -43,6 +53,7 @@ public:
 	}
 	Node* merge(Node *l, Node *r) {
 		if (!l || !r) return l ? l : r;
+		push_down(l), push_down(r);
 		if (l->priority > r->priority) {
 			l->r = merge(l->r, r);
 			push_up(l);
@@ -74,16 +85,19 @@ public:
 		auto p = split_by_size(t, pos);
 		return merge(merge(p.first, n), p.second);
 	}
-	void move(Node*& t, int l, int r, int k) { // move [l, r) to index k
+	void move(int l, int r, int k) { // move [l, r) to index k
 		Node *a, *b, *c;
-		tie(a,b) = split_by_size(t, l); tie(b,c) = split_by_size(b, r - l);
-		if (k <= l) t = merge(ins(a, b, k), c);
-		else t = merge(a, ins(c, b, k - r));
+		tie(a, b) = split_by_size(root, l); tie(b, c) = split_by_size(b, r - l);
+		root = k <= l ? merge(ins(a, b, k), c) : merge(a, ins(c, b, k - r));
 	} 
-	void move(int l, int r, int k) { move(root, l, r, k); }
+	void reverse(int l, int r) { // reverse [l, r)
+		Node *a, *b, *c;
+		tie(a, b) = split_by_size(root, l); tie(b, c) = split_by_size(b, r - l);
+		b->rev ^= 1, root = merge(a, merge(b, c));
+	}
 	template<class F> 
 	void flat(Node *r, F f) {
-		if (r) { flat(r->l, f), f(r->key), flat(r->r, f); }
+		if (r) { push_down(r), flat(r->l, f), f(r->key), flat(r->r, f); }
 	}
 	template<class F> void flat(F f) { flat(root, f); }
 	ImplicitTreap(): root(NULL) {}
@@ -94,12 +108,12 @@ using ITreap = ImplicitTreap<char>;
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n, m; cin >> n >> m;
-	string s; cin >> s; vector<char> ss(n);
-	for (int i = 0; i < n; i++) ss[i] = s[i];
+	string s; cin >> s; 
+	vector<char> ss(s.begin(), s.end());
 	ITreap treap(ss);
 	while(m--) {
-		int a, b; cin >> a >> b; a--, b--;
-		treap.move(a, b + 1, n);		
+		int a, b; cin >> a >> b; a--;
+		treap.move(a, b, n);
 	}
 	treap.flat([&](char a) { cout << a; });	
 }
