@@ -5,13 +5,13 @@ struct SuffixAutomaton {
 	struct State {
 		int len, link;
 		map<char,int> ch;
+		State(int _len = 0, int _link = -1): len(_len), link(_link) {}
 	};
 	int size, last;
 	vector<State> states;
-	vector<long long> cnt;
 	void extend(char c) {
 		int cur = size++;
-		states.push_back(State{states[last].len + 1, 0, map<char,int>()});
+		states.emplace_back(states[last].len + 1, 0);
 		int p = last;
 		for (;p != -1 && !states[p].ch.count(c); p = states[p].link) states[p].ch[c] = cur;
 		if (p == -1) states[cur].link = 0;
@@ -28,10 +28,9 @@ struct SuffixAutomaton {
 		}
 		last = cur;
 	}
-	SuffixAutomaton(const string &s): size(1), last(0) {
-		states.push_back(State{0, -1, map<char,int>()});
-		for (char c : s) extend(c);
-	}
+	void extend(const string &s) { for (char c : s) extend(c); }
+	SuffixAutomaton(): size(1), last(0) { states.emplace_back(); }
+	SuffixAutomaton(const string &s): size(1), last(0) { states.emplace_back(), extend(s); }
 	bool search(string &s) {
 		int cur = 0;
 		for (char c : s) {
@@ -40,32 +39,35 @@ struct SuffixAutomaton {
 		}
 		return 1;
 	}
-	long long dfs(int cur) {
-		if (cnt[cur] != -1) return cnt[cur];
-		cnt[cur] = 1;
-		for (auto [c, v] : states[cur].ch) cnt[cur] += dfs(v);
-		return cnt[cur];
-	}
-	string kth(long long k) {
-		cnt.resize(states.size(), -1);
-		dfs(0);
-		string ans;
-		for (int cur = 0; k;) {
-			for (auto [c, v] : states[cur].ch) {
-				if (cnt[v] < k) k -= cnt[v];
-				else {
-					ans.push_back(c), cur = v, k--;
-					break;
-				}
+}sam;
+
+vector<long long> cnt;
+long long dfs(int cur) {
+	if (cnt[cur] != -1) return cnt[cur];
+	cnt[cur] = 1;
+	for (auto [c, v] : sam.states[cur].ch) cnt[cur] += dfs(v);
+	return cnt[cur];
+}
+
+string kth(long long k) {
+	cnt.resize(sam.states.size(), -1);
+	dfs(0);
+	string ans;
+	for (int cur = 0; k;) {
+		for (auto [c, v] : sam.states[cur].ch) {
+			if (cnt[v] < k) k -= cnt[v];
+			else {
+				ans.push_back(c), cur = v, k--;
+				break;
 			}
 		}
-		return ans;
 	}
-};
+	return ans;
+}
 
 int main() {
 	string s; cin >> s;
+	sam.extend(s);
 	long long k; cin >> k;
-	SuffixAutomaton sam(s);
-	cout << sam.kth(k) << '\n';
+	cout << kth(k) << '\n';
 }
