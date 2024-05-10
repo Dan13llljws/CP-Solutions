@@ -23,30 +23,27 @@ int main() {
 		for (int i = 1; i <= n; i++) 
 			p[i] = p[i - 1] * 4 % mod;
 		vector<int> sz(n);
+ 
 		auto hash_tree = [&](auto self, int src, int par, vector<vector<int>> &adj, vector<ll> &hsh) -> void {
 			hsh[src] = sz[src] = 1;
-			for (int i = 0; i < (int)adj[src].size(); i++) {
-				if (adj[src][i] == par) adj[src].erase(adj[src].begin() + i);
-			}
-			int m = adj[src].size();
-			vector<int> id(m);
-			iota(id.begin(), id.end(), 0);
+			vector<int> ch;
 			for (int v : adj[src]) {
+				if (v == par) continue;
 				self(self, v, src, adj, hsh);
-				sz[src] += sz[v];
+				ch.push_back(v), sz[src] += sz[v];
 			}
-			sort(id.begin(), id.end(), [&](int i, int j) {
-				return hsh[adj[src][i]] < hsh[adj[src][j]];
+			sort(ch.begin(), ch.end(), [&](int i, int j) {
+					return hsh[i] < hsh[j];
 			});
-			for (int i = 0; i < m; i++) {
-				int j = adj[src][id[i]];
-				hsh[src] = (hsh[src] * p[sz[j]] + hsh[j]) * 2 % mod;
+			for (int c : ch) {
+				hsh[src] = (hsh[src] * p[sz[c]] + hsh[c]) % mod;
 			}
+			hsh[src] = hsh[src] * 2 % mod;
 		};
+ 
 		hash_tree(hash_tree, 0, 0, adj1, hsh1);
 		hash_tree(hash_tree, 0, 0, adj2, hsh2);
-		cout << (hsh1[0] == hsh2[0]? "YES" : "NO") << '\n';
+		cout << (hsh1[0] == hsh2[0] ? "YES" : "NO") << '\n';
 	}
 }
-
 
